@@ -10,7 +10,7 @@ async def root():
     return {"message": "Hello World"}
 
 
-@app.get("stock/data/stock_price/{ticker}")
+@app.get("/stock/data/stock_price/{ticker}")
 async def getPriceStock(ticker: str):
     try:
         price = get_data.get_stock_price(ticker)
@@ -23,7 +23,7 @@ async def getPriceStock(ticker: str):
     
     
     
-@app.get("stock/data/options_chain/{ticker}/{date}")
+@app.get("/stock/data/options_chain/{ticker}/{date}")
 async def get_options_chain_endpoint(ticker: str, date):
     try:
         date = str(date)

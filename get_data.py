@@ -57,7 +57,7 @@ def get_balanace_sheet(ticker_symbol : str):
         
         jsonData = convert.convert_pandas_json(balance_sheet)
         
-        print(jsonData)
+      
         
         return jsonData
         
@@ -66,7 +66,6 @@ def get_balanace_sheet(ticker_symbol : str):
         return {"status": 500, "error": f"Error fetching data: {e}"}
     
 
-print(get_balanace_sheet("AAPL"))
     
     
 
