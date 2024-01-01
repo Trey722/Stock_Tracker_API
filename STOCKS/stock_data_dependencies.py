@@ -1,3 +1,12 @@
+import yfinance as yf 
+
+def create_ticker_object(tickerSymbol):
+    try:
+        return yf.Ticker(tickerSymbol)
+    except:
+        raise TypeError("Failed to convert to ticker type")
+
+
 import pandas as pd
 
 def convert_pandas_json(data):
