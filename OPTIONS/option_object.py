@@ -20,6 +20,7 @@ class option_object:
         
     def get_underlying_value(self):
         return STOCKS.stock_data.get_stock_price(self.underlying_ticker)
+
     
     
     
@@ -44,7 +45,11 @@ class option_object:
     
     def get_voltiaility(self):
         data = self.get_data()['impliedVolatility']
-        return float(data)
+        return float(data.item())
+    
+    def get_permium(self):
+        data = self.get_data()['ask']
+        return float(data.item())
         
         
     # Just the inverse 
