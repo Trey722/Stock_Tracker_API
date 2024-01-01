@@ -8,3 +8,5 @@ yfinance==0.2.28
 
 pydantic==2.5.3
 
+starlette==0.32.0.post1
+
