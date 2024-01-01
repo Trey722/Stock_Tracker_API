@@ -1,0 +1,11 @@
+400s erro
+
+404 Place does not exist
+
+
+500s = Recieved but failed to respond
+
+502 = Recieved, but failed to load ticker 
+
+
+uvicorn main:app --host=0.0.0.0 --port=8000
