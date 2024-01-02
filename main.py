@@ -45,7 +45,7 @@ async def getPriceStock(ticker: str):
 async def get_options_chain_endpoint(ticker: str, date):
     try:
         date = str(date)
-        options_data = STOCKS.stock_data.get_stock_data.get_options_chain(ticker, date)
+        options_data = STOCKS.stock_data.get_options_chain(ticker, date)
         return options_data
     except Exception as e:
         return {"status": 500, "error": str(e)}
