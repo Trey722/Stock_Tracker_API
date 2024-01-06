@@ -13,7 +13,7 @@ def get_stock_price(ticker_symbol):
         stock_data = ticker.history(period="1d")
 
         # Extract the current price from the fetched data
-        current_price = stock_data['Close'][0]
+        current_price = stock_data['Close'].iloc[0]
 
         return current_price
     except Exception as e:
@@ -49,6 +49,28 @@ def get_balanace_sheet(ticker_symbol : str):
         
     except Exception as e:
         return {"status": 500, "error": f"Error fetching data: {e}"}
+    
+    
+def get_dividends_recent(ticker_symbol: str):
+    try:
+        # Create a ticker object for the provided ticker_symbol
+        ticker_object = stock_data_dependencies.create_ticker_object(ticker_symbol)
+        
+        # Get dividend data for the ticker object
+        dividends = ticker_object.dividends
+        
+        dividends_df = pd.DataFrame(dividends)
+        
+       
+        # Convert the most recent dividend data to JSON
+        return float((dividends_df.iloc[-1]).iloc[0])
+        
+        
+    except Exception as e:
+        # Return an error message if an exception occurs
+        return {"status": 500, "error": f"Error fetching data: {e}"}
+
+    
     
 
     
