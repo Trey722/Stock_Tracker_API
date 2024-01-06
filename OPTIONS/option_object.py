@@ -1,10 +1,11 @@
 import yfinance as yf 
 import STOCKS.stock_data
+
 import math
 import FRED.get_fred_data
-
-from OPTIONS import options_dependencies
-
+from OPTIONS import calculate_greeks,options_dependencies
+import QuantLib as ql
+from GENERAL import extract_date
 
 class option_object:
     def __init__(self, option_string : str):
@@ -14,12 +15,28 @@ class option_object:
         self.experiation_date =  option_data['experiation_date']
         self.type = option_data['type']
         self.strike = option_data['strike']
+        self.expiry_date = extract_date.get_date(option_data['experiation_date'])
+        
         
     
     
         
     def get_underlying_value(self):
         return STOCKS.stock_data.get_stock_price(self.underlying_ticker)
+    
+    
+    
+    
+    def get_type(self):
+        if (self.type == "C"):
+            return ql.Option.Call
+        return ql.Option.Put
+    
+    
+    def get_greeks(self):
+       
+        greeks = calculate_greeks.calculate_option_greeks(self.get_type(), self.get_underlying_value(), self.strike, ql.Date(self.expiry_date['day'], self.expiry_date['month'], self.expiry_date['year']), self.get_voltiaility(), FRED.get_fred_data.get_risk_free_intrest_rate(), STOCKS.stock_data.get_dividends_recent(self.underlying_ticker))
+        return greeks
 
     
     

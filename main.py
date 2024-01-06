@@ -66,6 +66,15 @@ async def get_risk_free_rate():
         return {"status": 500, "error": str(e)}
     
     
+    
+@app.get("/OPTIONS/DATA/{ticker}/Greeks")
+async def get_ticker(ticker):
+    try:
+        
+       return json.dumps(OPTIONS.option_object.option_object(ticker).get_greeks())
+    except Exception as e:
+        return {"status": 500, "error": str(e)}
+    
 @app.get("/CALC/OPTION/BUYING/{starting_price}/{ending_price}/{step}/{ticker}")
 async def CALC_option_value(starting_price, ending_price, step, ticker):
        try:
