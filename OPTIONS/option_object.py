@@ -66,7 +66,7 @@ class option_object:
     
     def get_permium(self):
         data = self.get_data()['ask']
-        return float(data.item())
+        return float(data.item()) * 100
         
         
     # Just the inverse 
