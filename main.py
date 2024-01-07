@@ -5,9 +5,13 @@ import json
 
 
 import STOCKS.stock_data
+import STOCKS.margin_calcualtor
+
+
 import FRED.get_fred_data
 import OPTIONS.calc_options
 import OPTIONS.option_object
+import OPTIONS.hedging
 
 
 
@@ -51,13 +55,6 @@ async def get_options_chain_endpoint(ticker: str, date):
         return {"status": 500, "error": str(e)}
     
     
-@app.get("/stock/data/balanace_sheet/{ticker}")
-async def get_balanace_sheet_endpoint(ticker):
-    try:
-        return STOCKS.stock_data.get_balanace_sheet(ticker)
-    except Exception as e:
-        return {"status": 500, "error": str(e)}
-    
 @app.get("/ECON/DATA/risk_free_rate")
 async def get_risk_free_rate():
     try:
@@ -89,12 +86,58 @@ async def CALC_option_value(starting_price, ending_price, step, ticker):
 @app.get("/CALC/OPTION/SELLING/{starting_price}/{ending_price}/{step}/{ticker}")
 async def CALC_option_value_selling(starting_price, ending_price, step, ticker):
     try:
+        if starting_price > ending_price:
+            raise TypeError("Starting Price can't be greater then endingprice")
+        elif (step <= 0):
+            raise TypeError("Step needs to be greater then 0")
+            
         starting_price = float(starting_price)
         ending_price = float(ending_price)
         step = float(step)
         return json.dumps(OPTIONS.calc_options.calculate_profit(starting_price, ending_price, step, ticker, False))
     except Exception as e:
         return {"status": 500, "error": str(e)}
+    
+@app.get("/CALC/STOCKS/PROFIT/{quantity}/{underlying_stock_price}/{margin_used}/{starting_price}/{ending_price}/{step}")
+async def calc_stock_profit(quantity, underlying_stock_price, margin_used, starting_price, ending_price, step):
+    try:
+        starting_price = float(starting_price)
+        ending_price = float(ending_price)
+        margin_used = float(margin_used)
+        underlying_stock_price = float(underlying_stock_price)
+        step = float(step)
+        
+        if starting_price > ending_price:
+            raise ValueError("Starting Price can't be greater than ending price")
+        elif step <= 0:
+            raise ValueError("Step needs to be greater than 0")
+        
+        quantity = int(quantity)
+        
+        # Call your function to calculate stock profits here
+        result = STOCKS.margin_calcualtor.calculate_margin(quantity, underlying_stock_price, margin_used, starting_price, ending_price, step)
+        
+        return {"result": result}
+    except Exception as e:
+         return {"status": 500, "error": str(e)}
+    
+    
+@app.get("/CALC/OPTION/HEDGE/DELTA/Gamma/{quantity}/{delta_option1}/{gamma_option1}/{delta_option2}/{gamma_option2}")
+async def CALC_gamma_hegde(quantity, delta_option1, gamma_option1, delta_option2, gamma_option2):
+    try:
+        quantity = int(quantity)
+        delta_option1 = float(delta_option1)
+        gamma_option1 = float(gamma_option1)
+        delta_option2 = float(delta_option2)
+        gamma_option2 = float(gamma_option2)
+        print(delta_option1, gamma_option1, delta_option2, gamma_option2)
+        print(OPTIONS.hedging.gamma_hedge_simple(quantity, delta_option1, gamma_option1, delta_option2, gamma_option2))
+        return json.dumps(OPTIONS.hedging.gamma_hedge_simple(quantity, delta_option1, gamma_option1, delta_option2, gamma_option2))
+    except Exception as e:
+        return {"status": 500, "error": str(e)}
+        
+    
+    
 
     
     
